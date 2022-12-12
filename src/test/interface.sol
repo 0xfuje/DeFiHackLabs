@@ -916,6 +916,45 @@ interface Uni_Pair_V2 {
   ) external returns (bool);
 }
 
+interface Uni_Router_V3 {
+    struct ExactInputSingleParams {
+        address tokenIn;
+        address tokenOut;
+        uint24 fee;
+        address recipient;
+        uint256 deadline;
+        uint256 amountIn;
+        uint256 amountOutMinimum;
+        uint160 sqrtPriceLimitX96;
+    }
+
+    struct ExactOutputSingleParams {
+        address tokenIn;
+        address tokenOut;
+        uint24 fee;
+        address recipient;
+        uint256 deadline;
+        uint256 amountOut;
+        uint256 amountInMaximum;
+        uint160 sqrtPriceLimitX96;
+    }
+
+    function swapExactTokensForTokens(
+        uint256 amountIn,
+        uint256 amountOutMin,
+        address[] calldata path,
+        address to
+    ) external payable returns (uint256 amountOut);
+
+    function exactInputSingle(
+        ExactInputSingleParams memory params
+    ) external payable returns (uint256 amountOut);
+
+    function exactOutputSingle(
+        ExactOutputSingleParams calldata params
+        ) external payable returns (uint256 amountIn);
+
+}
 interface Uni_Router_V2 {
   function WETH() external view returns (address);
 
@@ -4312,6 +4351,27 @@ interface IUSDT {
   function transfer(address _to, uint256 _value) external;
 }
 
+interface IDaiFlashloan {
+    function flashLoan(
+        address receiver,
+        address token,
+        uint256 amount,
+        bytes calldata data
+    ) external returns (bool);
+}
+
+interface IAaveFlashloan {
+    function flashLoan(
+        address receiverAddress,
+        address[] calldata assets,
+        uint256[] calldata amounts,
+        uint256[] calldata modes,
+        address onBehalfOf,
+        bytes calldata params,
+        uint16 referralCode
+    ) external;
+}
+
 interface IcurveYSwap {
   function exchange_underlying(
     int128 i,
@@ -5084,4 +5144,19 @@ interface IElevenNeverSellVault {
     function depositAll() external;
     function emergencyBurn() external;
     function withdrawAll() external;
+}
+
+interface IOpyn{
+    function addERC20CollateralOption(
+      uint256 amtToCreate,
+      uint256 amtCollateral,
+      address receiver
+    ) external;
+
+    function exercise(
+      uint256 oTokensToExercise,
+      address payable[] memory vaultsToExerciseFrom
+    ) external payable;
+
+    function removeUnderlying() external;
 }
